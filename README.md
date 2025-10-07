@@ -1,16 +1,35 @@
-# lab08
+# Flutter Demo App
 
-A new Flutter project.
+Aplicación sencilla hecha en **Flutter** con varias pantallas:
 
-## Getting Started
+- 🟦 **Login**
+- 🏠 **Menú (Home, Items, Logout)**
+- 📃 **Lista de Items**
+- 🛒 **Registro de Productos**
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🎨 Características
+- Diseño moderno con colores **negro** y **azul**  
+- Navegación entre pantallas con `Navigator`  
+- Botón **Guardar** y **Logout** que regresan al Login  
+- Totalmente estático (sin base de datos)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Cómo ejecutar
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/tuusuario/flutter_demo_app.git
+   cd flutter_demo_app
+Instala las dependencias:
+
+bash
+Copiar código
+flutter pub get
+Ejecuta la app:
+
+bash
+Copiar código
+flutter run
