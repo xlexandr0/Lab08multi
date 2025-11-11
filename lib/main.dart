@@ -1,119 +1,133 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(const MyApp());
+
+/// Colores usados en la app (constantes para evitar inconsistencias)
+const Color kBackground = CupertinoColors.white;
+const Color kText = CupertinoColors.black;
+const Color kButtonBlue = CupertinoColors.activeBlue;
+const Color kLogoutRed = CupertinoColors.destructiveRed;
+const Color kFieldBackground = CupertinoColors.extraLightBackgroundGray;
+const Color kCardBackground = CupertinoColors.extraLightBackgroundGray;
 
 class MyApp extends StatelessWidget {
-  final Color primaryBlue = const Color(0xFF2196F3);
-  final Color darkBackground = const Color(0xFF121212);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Demo App',
+    return const CupertinoApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: darkBackground,
-        primaryColor: primaryBlue,
-        colorScheme: ColorScheme.dark(
-          primary: primaryBlue,
-          secondary: Colors.blueAccent,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white10,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.white24),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-          ),
-          labelStyle: TextStyle(color: Colors.white70),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primaryBlue,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+      // Tema global: blanco, texto negro, fuente 'SFPro' (si la añadiste en pubspec)
+      theme: CupertinoThemeData(
+        brightness: Brightness.light,
+        primaryColor: kButtonBlue,
+        scaffoldBackgroundColor: kBackground,
+        textTheme: CupertinoTextThemeData(
+          // Usa la familia definida en tu pubspec ("SFPro")
+          textStyle: TextStyle(
+            fontFamily: 'SFPro',
+            color: kText,
+            fontSize: 17,
           ),
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginPage(),
-        '/menu': (context) => MenuPage(),
-        '/listview': (context) => ListViewPage(),
-        '/registro': (context) => RegistroPage(),
-      },
+      home: LoginPage(),
     );
   }
 }
 
 // ---------------- LOGIN PAGE ----------------
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Widget _buildField({
+    required String placeholder,
+    required TextEditingController controller,
+    bool obscure = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: kFieldBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: CupertinoTextField(
+        controller: controller,
+        placeholder: placeholder,
+        obscureText: obscure,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+        style: const TextStyle(color: kText, fontFamily: 'SFPro'),
+        placeholderStyle: const TextStyle(color: CupertinoColors.systemGrey),
+        decoration: null, // dejamos el Container como "fondo" del campo
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Color primaryBlue = Theme.of(context).colorScheme.primary;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('LOGIN'),
-        backgroundColor: Colors.black,
+    final theme = CupertinoTheme.of(context);
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text(
+          "LOGIN",
+          style: TextStyle(color: kText),
+        ),
+        backgroundColor: kBackground,
+        border: null,
       ),
-      body: Center(
-        child: Container(
-          width: 320,
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white10,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Bienvenido, Alexandro',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/menu');
-                },
-                child: const Text('LOGIN'),
-              ),
-            ],
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Bienvenido",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
+                    color: kText,
+                    fontFamily: 'SFPro',
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _buildField(
+                    placeholder: "Email", controller: emailController),
+                const SizedBox(height: 16),
+                _buildField(
+                  placeholder: "Password",
+                  controller: passwordController,
+                  obscure: true,
+                ),
+                const SizedBox(height: 24),
+                // Botón azul (filled) con color explícito
+                CupertinoButton.filled(
+                  borderRadius: BorderRadius.circular(12),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const MenuPage()),
+                    );
+                  },
+                  child: const Text(
+                    "LOGIN",
+                    style: TextStyle(
+                      color: CupertinoColors.white,
+                      fontFamily: 'SFPro',
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -123,51 +137,77 @@ class LoginPage extends StatelessWidget {
 
 // ---------------- MENU PAGE ----------------
 class MenuPage extends StatelessWidget {
+  const MenuPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final Color primaryBlue = Theme.of(context).colorScheme.primary;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MENU'),
-        backgroundColor: Colors.black,
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text("MENU", style: TextStyle(color: kText)),
+        backgroundColor: kBackground,
+        border: null,
       ),
-      body: Center(
-        child: Container(
-          width: 300,
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white10,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white24),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Bienvenido al Home'),
-                        backgroundColor: Colors.blueAccent),
-                  );
-                },
-                child: const Text('Home'),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, '/listview'),
-                child: const Text('Items'),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, '/'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Menú principal",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                    color: kText,
+                    fontFamily: 'SFPro',
+                  ),
                 ),
-                child: const Text('Logout'),
-              ),
-            ],
+                const SizedBox(height: 24),
+                // Home (no navega) - azul
+                CupertinoButton(
+                  borderRadius: BorderRadius.circular(12),
+                  color: kButtonBlue,
+                  onPressed: () {},
+                  child: const Text(
+                    "Home",
+                    style: TextStyle(color: CupertinoColors.white),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Items -> lista (botón azul también)
+                CupertinoButton(
+                  borderRadius: BorderRadius.circular(12),
+                  color: kButtonBlue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const ListViewPage()),
+                    );
+                  },
+                  child: const Text(
+                    "Items",
+                    style: TextStyle(color: CupertinoColors.white),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Logout -> rojo con texto blanco y vuelve al login
+                CupertinoButton(
+                  borderRadius: BorderRadius.circular(12),
+                  color: kLogoutRed,
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const LoginPage()),
+                    );
+                  },
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(color: CupertinoColors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -177,81 +217,57 @@ class MenuPage extends StatelessWidget {
 
 // ---------------- LISTVIEW PAGE ----------------
 class ListViewPage extends StatelessWidget {
-  final List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+  const ListViewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('LISTA DE ITEMS'),
-        backgroundColor: Colors.black,
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Card(
-            color: Colors.white10,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: ListTile(
-              title: Text(
-                items[index],
-                style: const TextStyle(color: Colors.white),
-              ),
-              leading: const Icon(Icons.label, color: Colors.blueAccent),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+    final items = ["Item 1", "Item 2", "Item 3", "Item 4"];
 
-// ---------------- REGISTRO PAGE ----------------
-class RegistroPage extends StatelessWidget {
-  final TextEditingController nombreController = TextEditingController();
-  final TextEditingController precioController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    final Color primaryBlue = Theme.of(context).colorScheme.primary;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('REGISTRO DE PRODUCTOS'),
-        backgroundColor: Colors.black,
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text("Items", style: TextStyle(color: kText)),
+        backgroundColor: kBackground,
+        border: null,
       ),
-      body: Center(
-        child: Container(
-          width: 320,
+      child: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white10,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white24),
-          ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: nombreController,
-                decoration:
-                    const InputDecoration(labelText: 'Nombre del producto'),
+              const Text(
+                "Items",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: kText,
+                  fontFamily: 'SFPro',
+                ),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: precioController,
-                decoration: const InputDecoration(labelText: 'Precio'),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-                child: const Text('GUARDAR'),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: kCardBackground,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          items[index],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: kText,
+                            fontFamily: 'SFPro',
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
